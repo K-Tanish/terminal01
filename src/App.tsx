@@ -14,9 +14,10 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { StatusBar } from './components/StatusBar';
 import { RowInspector } from './components/RowInspector';
+import { AnalyticsOverlay } from './components/AnalyticsOverlay';
 
-function Dashboard() {
-  const { kpi, isPaused, bufferedCount, togglePause, filterOptions, getPoolSnapshot, viewVersion } =
+function Dashboard({ onGoHome }: { onGoHome: () => void }) {
+  const { kpi, isPaused, bufferedCount, togglePause, filterOptions, getPoolSnapshot, viewVersion, snapshotRef, pauseTimestampRef } =
     useStreamEngine();
   const { sortConfigs, handleHeaderClick } = useSortEngine();
   const { filters, setFilter } = useFilterEngine();
@@ -25,6 +26,15 @@ function Dashboard() {
 
   const [filteredCount, setFilteredCount] = useState(0);
   const { selectedRow, isInspectorOpen, openInspector, closeInspector } = useRowInspector(isPaused);
+
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+
+  const handleOpenAnalytics = useCallback(() => {
+    setIsAnalyticsOpen(true);
+    if (isInspectorOpen) {
+      closeInspector();
+    }
+  }, [isInspectorOpen, closeInspector]);
 
   const rows = useMemo(() => getPoolSnapshot(), [getPoolSnapshot, viewVersion]);
 
@@ -40,7 +50,7 @@ function Dashboard() {
 
   return (
     <div className="flex h-full w-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} />
+      <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} onGoHome={onGoHome} />
 
       <main className="flex-1 flex flex-col min-w-0 bg-[#f4f7f9] overflow-hidden">
         <Header
@@ -48,6 +58,7 @@ function Dashboard() {
           isPaused={isPaused}
           bufferedCount={bufferedCount}
           onTogglePause={togglePause}
+          onOpenAnalytics={handleOpenAnalytics}
         />
 
         <div className="flex-1 flex flex-col min-h-0 px-5 pt-5 pb-0 gap-4 overflow-hidden">
@@ -107,6 +118,14 @@ function Dashboard() {
         isInspectorOpen={isInspectorOpen}
         closeInspector={closeInspector}
       />
+      {isAnalyticsOpen && (
+        <AnalyticsOverlay
+          isOpen={isAnalyticsOpen}
+          onClose={() => setIsAnalyticsOpen(false)}
+          snapshot={snapshotRef.current}
+          pauseTimestamp={pauseTimestampRef.current}
+        />
+      )}
     </div>
   );
 }
@@ -118,5 +137,5 @@ export default function App() {
     return <LandingPage onEnter={() => setShowDashboard(true)} />;
   }
 
-  return <Dashboard />;
+  return <Dashboard onGoHome={() => setShowDashboard(false)} />;
 }

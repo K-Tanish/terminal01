@@ -25,6 +25,8 @@ export function useStreamEngine() {
 
   const isPausedRef = useRef(false);
   const bufferRef = useRef<RpaRow[][]>([]);
+  const snapshotRef = useRef<RpaRow[]>([]);
+  const pauseTimestampRef = useRef<number>(0);
 
   const [isPaused, setIsPaused] = useState(false);
   const [bufferedCount, setBufferedCount] = useState(0);
@@ -128,6 +130,12 @@ export function useStreamEngine() {
   const togglePause = useCallback(() => {
     const next = !isPausedRef.current;
     isPausedRef.current = next;
+
+    if (next) {
+      snapshotRef.current = Array.from(dataPoolRef.current.values());
+      pauseTimestampRef.current = Date.now();
+    }
+
     setIsPaused(next);
     if (!next) {
       flushBuffer();
@@ -184,5 +192,7 @@ export function useStreamEngine() {
     filterOptions: filterOptionsRef,
     getPoolSnapshot,
     viewVersion,
+    snapshotRef,
+    pauseTimestampRef,
   };
 }
