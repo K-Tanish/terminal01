@@ -1,5 +1,7 @@
 import React from 'react';
 import { DataVisualization3D } from './DataVisualization3D';
+import { ScrollReveal } from './ScrollReveal';
+import { TelemetryModel, GridModel, SearchModel } from './FeatureModels3D';
 
 const LIME_ACCENT = '#a8d91d';
 
@@ -78,14 +80,16 @@ function ChevronDoubleDown() {
 export function LandingPage({ onEnter }: Props) {
   return (
     <div
-      className="h-full w-full flex flex-col overflow-hidden select-none"
+      className="h-full w-full overflow-y-auto overflow-x-hidden select-none bg-[#f0efe9]"
       style={{
         background: '#f0efe9',
         fontFamily: "'Inter', sans-serif",
       }}
     >
-      {/* ── Top Navigation ── */}
-      <nav className="flex items-center justify-between px-10 pt-8 pb-0 shrink-0">
+      {/* ── HERO SECTION ── */}
+      <section className="relative flex flex-col min-h-full">
+        {/* ── Top Navigation ── */}
+        <nav className="flex items-center justify-between px-10 pt-8 pb-0 shrink-0 z-20">
         {/* Logo */}
         <div className="flex items-center gap-3">
           <div
@@ -212,8 +216,108 @@ export function LandingPage({ onEnter }: Props) {
       </div>
 
       {/* Bottom scroll hint */}
-      <div className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-70">
-        <ChevronDoubleDown />
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-70 animate-bounce">
+          <ChevronDoubleDown />
+        </div>
+      </section>
+
+      {/* ── FEATURES SECTION ── */}
+      <section className="bg-[#0b0b0b] text-white py-32 px-10 relative z-20">
+        <div className="max-w-6xl mx-auto space-y-40">
+          
+          {/* Feature 1 */}
+          <ScrollReveal>
+            <div className="flex flex-col md:flex-row items-center gap-16">
+              <div className="flex-1 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-0.5" style={{ backgroundColor: LIME_ACCENT }} />
+                  <span className="text-xs font-bold tracking-[0.15em] text-gray-400 uppercase">Feature 01</span>
+                </div>
+                <h3 className="text-5xl font-bold tracking-tight" style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.02em' }}>
+                  CLIENT-SIDE PROCESSING
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed max-w-md">
+                  Everything runs entirely on your browser. There is no server latency, no database querying, 
+                  and no external library dependencies. Your data remains fully local, ensuring instant 
+                  performance and maximum security.
+                </p>
+              </div>
+              <div className="flex-1 w-full flex justify-center">
+                <TelemetryModel />
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Feature 2 */}
+          <ScrollReveal delay={100}>
+            <div className="flex flex-col md:flex-row-reverse items-center gap-16">
+              <div className="flex-1 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-0.5" style={{ backgroundColor: LIME_ACCENT }} />
+                  <span className="text-xs font-bold tracking-[0.15em] text-gray-400 uppercase">Feature 02</span>
+                </div>
+                <h3 className="text-5xl font-bold tracking-tight" style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.02em' }}>
+                  LIVE DATA ANALYSIS
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed max-w-md">
+                  Continuously monitor incoming data streams in real-time. The dashboard processes 
+                  and renders live telemetry instantly, allowing you to track changes, identify 
+                  anomalies, and act on insights as soon as they happen.
+                </p>
+              </div>
+              <div className="flex-1 w-full flex justify-center">
+                <GridModel />
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Feature 3 */}
+          <ScrollReveal delay={100}>
+            <div className="flex flex-col md:flex-row items-center gap-16">
+              <div className="flex-1 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-0.5" style={{ backgroundColor: LIME_ACCENT }} />
+                  <span className="text-xs font-bold tracking-[0.15em] text-gray-400 uppercase">Feature 03</span>
+                </div>
+                <h3 className="text-4xl font-bold tracking-tight" style={{ fontFamily: "'Anton', sans-serif", letterSpacing: '0.02em' }}>
+                  CUSTOMIZABLE VIEW INTERFACE
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed max-w-md">
+                  Tailor the dataset to your exact needs. You can sort by multiple columns simultaneously 
+                  and apply dynamic category filters. Your customized view remains perfectly intact and 
+                  responsive even while live data updates.
+                </p>
+              </div>
+              <div className="flex-1 w-full flex justify-center">
+                <SearchModel />
+              </div>
+            </div>
+          </ScrollReveal>
+
+        </div>
+        
+        <div className="mt-40 text-center">
+           <button
+              onClick={onEnter}
+              className="inline-flex items-center gap-2.5 font-bold text-sm tracking-wider px-8 py-5 rounded-full transition-all duration-200 hover:scale-[1.03] active:scale-[0.98]"
+              style={{
+                background: LIME_ACCENT,
+                color: '#000',
+                letterSpacing: '0.06em',
+                boxShadow: '0 4px 20px rgba(191, 255, 43, 0.4)',
+              }}
+            >
+              LAUNCH CONTROL TERMINAL
+              <ArrowDiagonal />
+            </button>
+        </div>
+      </section>
+
+      {/* Footer Credit */}
+      <div className="w-full bg-[#0b0b0b] pb-12 flex justify-center items-center">
+        <span className="text-[#555555] text-xs tracking-[0.15em] font-medium opacity-80 uppercase">
+          made with purpose - by Tanish_K
+        </span>
       </div>
     </div>
   );

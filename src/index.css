@@ -81,6 +81,24 @@ input:checked + .slider:before {
 }
 
 /* Ensure no layout shift on flash */
+/* Ensure no layout shift on flash */
 tr.row-flash td {
   position: relative;
+}
+
+/* Breathing animation for connected status */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  }
+}
+
+.animate-breathe {
+  animation: breathe 2s ease-in-out infinite;
 }

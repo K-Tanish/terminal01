@@ -72,7 +72,7 @@ export const DataGrid = React.memo(function DataGrid({
     <div
       ref={containerRef}
       className="overflow-auto custom-scrollbar"
-      style={{ flex: 1, minHeight: 0, maxHeight: 'calc(100vh - 380px)', minWidth: 0 }}
+      style={{ flex: 1, minHeight: 0, minWidth: 0 }}
     >
       <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed', minWidth: 1100 }}>
         <colgroup>
@@ -101,19 +101,21 @@ export const DataGrid = React.memo(function DataGrid({
                 onClick={col.sortable ? (e) => onHeaderClick(col.key, e.shiftKey) : undefined}
                 title={col.sortable ? `Sort by ${col.label} (Shift+Click for multi-sort)` : undefined}
               >
-                <div className={`flex items-center gap-1.5 ${col.center ? 'justify-center' : ''}`}>
-                  <span>{col.label}</span>
-                  {col.sortable ? (
-                    <SortControls
-                      columnKey={col.key}
-                      sortConfigs={sortConfigs}
-                      sortable
-                    />
-                  ) : (
-                    <svg className="w-3 h-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 9l4-4 4 4m0 6l-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-                    </svg>
-                  )}
+                <div className={`flex items-center gap-1.5 min-w-0 ${col.center ? 'justify-center' : ''}`}>
+                  <span className="truncate" title={col.label}>{col.label}</span>
+                  <div className="shrink-0">
+                    {col.sortable ? (
+                      <SortControls
+                        columnKey={col.key}
+                        sortConfigs={sortConfigs}
+                        sortable
+                      />
+                    ) : (
+                      <svg className="w-3 h-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 9l4-4 4 4m0 6l-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
+                      </svg>
+                    )}
+                  </div>
                 </div>
               </th>
             ))}

@@ -134,6 +134,13 @@
         }
         console.log('[RPA Stream] Loaded ' + seedRows.length + ' seed rows. Starting stream...');
 
+        // Ensure the initial dataset has a good mix of all statuses (including Failed)
+        seedRows.forEach(function (r) {
+          if (Math.random() < 0.15) {
+            r.project_status = randChoice(STATUSES);
+          }
+        });
+
         // Fire an initial batch immediately with all seed rows
         var initBatch = seedRows.map(function (r) { return Object.assign({}, r); });
         try { callback(initBatch); } catch (e) {}

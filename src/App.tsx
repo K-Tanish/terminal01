@@ -15,6 +15,7 @@ import { Header } from './components/Header';
 import { StatusBar } from './components/StatusBar';
 import { RowInspector } from './components/RowInspector';
 import { AnalyticsOverlay } from './components/AnalyticsOverlay';
+import { HelpModal } from './components/HelpModal';
 import { useDataProcessor } from './hooks/useDataProcessor';
 import { exportToCsv } from './utils/csvExport';
 import { ExportToast, ToastConfig } from './components/ExportToast';
@@ -32,6 +33,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
 
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const handleOpenAnalytics = useCallback(() => {
     setIsAnalyticsOpen(true);
@@ -115,6 +117,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           onOpenAnalytics={handleOpenAnalytics}
           onExport={handleExport}
           onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
+          onToggleHelp={() => setIsHelpOpen(!isHelpOpen)}
         />
 
         <div className="flex-1 flex flex-col min-h-0 px-5 pt-5 pb-0 gap-4 overflow-hidden">
@@ -174,6 +177,9 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
         isInspectorOpen={isInspectorOpen}
         closeInspector={closeInspector}
       />
+      
+      <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+      
       {isAnalyticsOpen && (
         <AnalyticsOverlay
           isOpen={isAnalyticsOpen}
