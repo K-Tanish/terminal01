@@ -16,7 +16,7 @@ export const PausePlayControl = React.memo(function PausePlayControl({ isPaused,
       )}
       <button
         onClick={onToggle}
-        className={`px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
+        className={`px-5 h-10 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
           isPaused
             ? 'bg-[#e3ff73] text-black hover:bg-[#d4f060]'
             : 'bg-black text-white hover:bg-gray-800'

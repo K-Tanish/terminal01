@@ -1,14 +1,10 @@
 import { useState, useCallback } from 'react';
 import type { SortConfig, SortDirection } from '../types';
 
-const SORTABLE_COLS = ['budget_usd', 'roi_percent', 'employee_hours_saved'];
-
 export function useSortEngine() {
   const [sortConfigs, setSortConfigs] = useState<SortConfig[]>([]);
 
   const handleHeaderClick = useCallback((key: string, shiftKey: boolean) => {
-    if (!SORTABLE_COLS.includes(key)) return;
-
     setSortConfigs((prev) => {
       if (shiftKey) {
         // Multi-sort: add or cycle this key

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { LandingPage } from './components/landing/LandingPage';
 import { useStreamEngine } from './hooks/useStreamEngine';
 import { useSortEngine } from './hooks/useSortEngine';
@@ -15,6 +15,9 @@ import { Header } from './components/Header';
 import { StatusBar } from './components/StatusBar';
 import { RowInspector } from './components/RowInspector';
 import { AnalyticsOverlay } from './components/AnalyticsOverlay';
+import { useDataProcessor } from './hooks/useDataProcessor';
+import { exportToCsv } from './utils/csvExport';
+import { ExportToast, ToastConfig } from './components/ExportToast';
 
 function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { kpi, isPaused, bufferedCount, togglePause, filterOptions, getPoolSnapshot, viewVersion, snapshotRef, pauseTimestampRef } =
@@ -28,6 +31,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { selectedRow, isInspectorOpen, openInspector, closeInspector } = useRowInspector(isPaused);
 
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleOpenAnalytics = useCallback(() => {
     setIsAnalyticsOpen(true);
@@ -37,6 +41,9 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   }, [isInspectorOpen, closeInspector]);
 
   const rows = useMemo(() => getPoolSnapshot(), [getPoolSnapshot, viewVersion]);
+  const { sortedRows } = useDataProcessor(rows, filters, searchQuery, sortConfigs);
+
+  const [toast, setToast] = useState<ToastConfig | null>(null);
 
   const filterOpts = useMemo(
     () => ({ ...filterOptions.current }),
@@ -48,9 +55,56 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
     setFilteredCount(n);
   }, []);
 
+  const handleExport = useCallback(() => {
+    const filename = 'export.csv';
+    exportToCsv(sortedRows, filename);
+    
+    // Sort summary
+    let sortSummary = 'No sort applied';
+    if (sortConfigs.length > 0) {
+      sortSummary = 'Sorted by ' + sortConfigs.map(c => `${c.key} ${c.direction === 'desc' ? '↓' : '↑'}`).join(', ');
+    }
+
+    // Filter summary
+    const activeFilters = [];
+    if (filters.automation_type.length > 0) activeFilters.push(`automation_type (${filters.automation_type.length})`);
+    if (filters.department.length > 0) activeFilters.push(`department (${filters.department.length})`);
+    if (filters.industry.length > 0) activeFilters.push(`industry (${filters.industry.length})`);
+    if (filters.implementation_partner.length > 0) activeFilters.push(`implementation_partner (${filters.implementation_partner.length})`);
+    if (filters.country.length > 0) activeFilters.push(`country (${filters.country.length})`);
+    
+    let filterSummary = 'No filters active';
+    if (activeFilters.length > 0) {
+      filterSummary = 'Filters: ' + activeFilters.join(', ');
+    }
+
+    // Assign a new ID to force re-render if clicked multiple times
+    setToast({
+      id: Date.now(),
+      rowCount: sortedRows.length,
+      sortSummary,
+      filterSummary,
+      searchQuery,
+      filename
+    });
+  }, [sortedRows, sortConfigs, filters, searchQuery]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        handleExport();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleExport]);
+
   return (
     <div className="flex h-full w-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
-      <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} onGoHome={onGoHome} />
+      {isSidebarOpen && (
+        <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} onGoHome={onGoHome} />
+      )}
 
       <main className="flex-1 flex flex-col min-w-0 bg-[#f4f7f9] overflow-hidden">
         <Header
@@ -59,6 +113,8 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           bufferedCount={bufferedCount}
           onTogglePause={togglePause}
           onOpenAnalytics={handleOpenAnalytics}
+          onExport={handleExport}
+          onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         />
 
         <div className="flex-1 flex flex-col min-h-0 px-5 pt-5 pb-0 gap-4 overflow-hidden">
@@ -91,7 +147,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                 </div>
               )}
               <DataGrid
-                rows={rows}
+                rows={sortedRows}
                 sortConfigs={sortConfigs}
                 filters={filters}
                 searchQuery={searchQuery}
@@ -126,6 +182,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
           pauseTimestamp={pauseTimestampRef.current}
         />
       )}
+      <ExportToast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }

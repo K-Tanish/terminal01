@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import type { RpaRow, SortConfig, FilterState } from '../types';
-import { stableSort } from '../utils/sortHelpers';
-import { fuzzyMatch } from '../utils/fuzzyMatcher';
 import { useVirtualScroll } from '../hooks/useVirtualScroll';
 import { AlertRow } from './AlertRow';
 import { SortControls } from './SortControls';
@@ -28,19 +26,19 @@ interface ColDef {
 }
 
 const COLUMNS: ColDef[] = [
-  { key: 'project_id', label: 'Project ID' },
-  { key: 'project_name', label: 'Project Name' },
-  { key: 'project_status', label: 'Project Status', center: true },
-  { key: 'automation_type', label: 'Automation Type' },
-  { key: 'robots_deployed', label: 'Robots Deployed', center: true },
+  { key: 'project_id', label: 'Project ID', sortable: true },
+  { key: 'project_name', label: 'Project Name', sortable: true },
+  { key: 'project_status', label: 'Project Status', center: true, sortable: true },
+  { key: 'automation_type', label: 'Automation Type', sortable: true },
+  { key: 'robots_deployed', label: 'Robots Deployed', center: true, sortable: true },
   { key: 'budget_usd', label: 'Budget (USD)', sortable: true },
-  { key: 'annual_savings_usd', label: 'Annual Savings' },
+  { key: 'annual_savings_usd', label: 'Annual Savings', sortable: true },
   { key: 'roi_percent', label: 'ROI %', sortable: true },
   { key: 'employee_hours_saved', label: 'Emp. Hours Saved', sortable: true },
-  { key: 'department', label: 'Department' },
-  { key: 'industry', label: 'Industry' },
-  { key: 'implementation_partner', label: 'Impl. Partner', extraClass: 'hidden xl:table-cell' },
-  { key: 'country', label: 'Country', extraClass: 'hidden 2xl:table-cell' },
+  { key: 'department', label: 'Department', sortable: true },
+  { key: 'industry', label: 'Industry', sortable: true },
+  { key: 'implementation_partner', label: 'Impl. Partner', extraClass: 'hidden xl:table-cell', sortable: true },
+  { key: 'country', label: 'Country', extraClass: 'hidden 2xl:table-cell', sortable: true },
 ];
 
 export const DataGrid = React.memo(function DataGrid({
@@ -55,45 +53,15 @@ export const DataGrid = React.memo(function DataGrid({
   selectedRow,
   isInspectorOpen,
 }: Props) {
-  const filteredRows = useMemo(() => {
-    let result = rows;
-
-    if (filters.automation_type.length > 0) {
-      result = result.filter((r) => filters.automation_type.includes(r.automation_type));
-    }
-    if (filters.department.length > 0) {
-      result = result.filter((r) => filters.department.includes(r.department));
-    }
-    if (filters.industry.length > 0) {
-      result = result.filter((r) => filters.industry.includes(r.industry));
-    }
-    if (filters.implementation_partner.length > 0) {
-      result = result.filter((r) => filters.implementation_partner.includes(r.implementation_partner));
-    }
-    if (filters.country.length > 0) {
-      result = result.filter((r) => filters.country.includes(r.country));
-    }
-
-    if (searchQuery) {
-      result = result.filter((r) => fuzzyMatch(r, searchQuery));
-    }
-
-    return result;
-  }, [rows, filters, searchQuery]);
-
-  const sortedRows = useMemo(() => {
-    return stableSort(filteredRows, sortConfigs);
-  }, [filteredRows, sortConfigs]);
-
   // Report filtered count to parent
-  const filteredCount = sortedRows.length;
+  const filteredCount = rows.length;
   React.useEffect(() => {
     onFilteredCount(filteredCount);
   }, [filteredCount, onFilteredCount]);
 
-  const { containerRef, startIndex, endIndex, spacerTop, spacerBottom } = useVirtualScroll(sortedRows.length);
+  const { containerRef, startIndex, endIndex, spacerTop, spacerBottom } = useVirtualScroll(rows.length);
 
-  const visibleRows = sortedRows.slice(startIndex, endIndex);
+  const visibleRows = rows.slice(startIndex, endIndex);
 
   const handleRowClick = (row: RpaRow) => {
     if (!isPaused) return;
@@ -172,7 +140,7 @@ export const DataGrid = React.memo(function DataGrid({
           )}
         </tbody>
       </table>
-      {sortedRows.length === 0 && (
+      {rows.length === 0 && (
         <div className="flex items-center justify-center h-48 text-sm text-gray-400">
           No rows match the current filters
         </div>
