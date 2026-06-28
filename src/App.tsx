@@ -24,7 +24,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   const { kpi, isPaused, bufferedCount, togglePause, filterOptions, getPoolSnapshot, viewVersion, snapshotRef, pauseTimestampRef } =
     useStreamEngine();
   const { sortConfigs, handleHeaderClick } = useSortEngine();
-  const { filters, setFilter } = useFilterEngine();
+  const { filters, setFilter, resetFilters } = useFilterEngine();
   const { searchQuery, handleSearch } = useFuzzySearch();
   const { layout, togglePanel, resetLayout } = useLayoutPersistence();
 
@@ -131,6 +131,7 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
                     filters={filters}
                     options={filterOpts}
                     onFilter={setFilter}
+                    onClearAll={resetFilters}
                   />
                 </div>
               )}

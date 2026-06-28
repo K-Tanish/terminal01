@@ -5,6 +5,7 @@ interface Props {
   filters: FilterState;
   options: FilterOptions;
   onFilter: (key: keyof FilterState, values: string[]) => void;
+  onClearAll: () => void;
 }
 
 interface MultiSelectProps {
@@ -55,7 +56,9 @@ function MultiSelect({ label, options, selected, onChange }: MultiSelectProps) {
   );
 }
 
-export const CategoryFilters = React.memo(function CategoryFilters({ filters, options, onFilter }: Props) {
+export const CategoryFilters = React.memo(function CategoryFilters({ filters, options, onFilter, onClearAll }: Props) {
+  const hasActiveFilters = Object.values(filters).some(arr => arr.length > 0);
+
   return (
     <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
       <div className="p-2 border border-gray-200 rounded-lg text-gray-400 shrink-0">
@@ -100,6 +103,20 @@ export const CategoryFilters = React.memo(function CategoryFilters({ filters, op
           onChange={(v) => onFilter('country', v)}
         />
       </div>
+      
+      {hasActiveFilters && (
+        <div className="shrink-0 pl-2 border-l border-gray-100">
+          <button
+            onClick={onClearAll}
+            className="text-xs font-bold text-gray-500 hover:text-red-500 transition-colors px-3 py-2 bg-gray-50 hover:bg-red-50 rounded-lg flex items-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Clear All
+          </button>
+        </div>
+      )}
     </div>
   );
 });

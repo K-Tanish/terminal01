@@ -1,13 +1,18 @@
 # RPA Monitor
 
-RPA Monitor is a React + TypeScript dashboard for monitoring robotic process automation activity in real time. It includes live stream controls, filtering, sorting, and a virtualized data grid for high-performance row rendering.
+RPA Monitor is a modern React + TypeScript dashboard designed for monitoring robotic process automation activity in real time. It features a high-performance virtualized data grid, sleek glassmorphic UI elements, and a 3D-interactive landing page.
+
+Built with purpose by **Tanish_K**.
 
 ## Key features
 
+- Interactive 3D Landing Page with immersive models and smooth transitions
 - Live stream of RPA project records with pause/play control
-- Virtualized data grid for large datasets
-- Search and filter controls for automation type, department, industry, partner, and country
+- Virtualized data grid for handling high-density datasets
+- Concurrent multi-column sorting (Shift+Click) and fuzzy search engine
+- Search and filter controls with a one-click "Clear All" reset
 - On-demand row inspector panel when the stream is paused
+- Glassmorphic Help Modal and Analytics overlay
 - Project status badges, alert styling, and metrics display
 
 ## Installation
