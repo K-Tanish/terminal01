@@ -97,7 +97,9 @@ export const DataGrid = React.memo(function DataGrid({
                 key={col.key}
                 className={`px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap select-none ${
                   col.center ? 'text-center' : ''
-                } ${col.extraClass || ''}`}
+                } ${col.extraClass || ''} ${col.sortable ? 'cursor-pointer hover:bg-gray-50 hover:text-gray-600 transition-colors' : ''}`}
+                onClick={col.sortable ? (e) => onHeaderClick(col.key, e.shiftKey) : undefined}
+                title={col.sortable ? `Sort by ${col.label} (Shift+Click for multi-sort)` : undefined}
               >
                 <div className={`flex items-center gap-1.5 ${col.center ? 'justify-center' : ''}`}>
                   <span>{col.label}</span>
@@ -105,7 +107,6 @@ export const DataGrid = React.memo(function DataGrid({
                     <SortControls
                       columnKey={col.key}
                       sortConfigs={sortConfigs}
-                      onClick={onHeaderClick}
                       sortable
                     />
                   ) : (

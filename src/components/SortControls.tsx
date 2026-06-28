@@ -4,11 +4,10 @@ import type { SortConfig } from '../types';
 interface Props {
   columnKey: string;
   sortConfigs: SortConfig[];
-  onClick: (key: string, shiftKey: boolean) => void;
   sortable?: boolean;
 }
 
-export const SortControls = React.memo(function SortControls({ columnKey, sortConfigs, onClick, sortable = false }: Props) {
+export const SortControls = React.memo(function SortControls({ columnKey, sortConfigs, sortable = false }: Props) {
   const config = sortConfigs.find((c) => c.key === columnKey);
 
   if (!sortable) {
@@ -20,10 +19,8 @@ export const SortControls = React.memo(function SortControls({ columnKey, sortCo
   }
 
   return (
-    <button
+    <div
       className="flex items-center gap-1 group"
-      onClick={(e) => onClick(columnKey, e.shiftKey)}
-      title={`Sort by ${columnKey}${' (Shift+Click for multi-sort)'}`}
     >
       {config && (
         <span className="w-4 h-4 rounded-full bg-[#e3ff73] text-black inline-flex items-center justify-center text-[8px] font-bold shrink-0">
@@ -45,6 +42,6 @@ export const SortControls = React.memo(function SortControls({ columnKey, sortCo
           <path d="M8 9l4-4 4 4m0 6l-4 4-4-4" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
         </svg>
       )}
-    </button>
+    </div>
   );
 });
