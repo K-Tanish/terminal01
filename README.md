@@ -15,6 +15,13 @@ Built with purpose by **Tanish_K**.
 - Glassmorphic Help Modal and Analytics overlay
 - Project status badges, alert styling, and metrics display
 
+## Tech Stack & Libraries
+
+This project was built from the ground up for maximum performance and a bespoke aesthetic:
+- **Core Framework:** React 18 + TypeScript + Tailwind CSS
+- **Data Visualization:** **Chart.js** (for 2D analytics charts) and **Three.js** via `@react-three/fiber` (for immersive 3D landing page models).
+- **Custom UI:** We explicitly **do not** use external UI component libraries (such as shadcn, Material UI, or Ant Design). Every component, including the high-performance virtualized data grid and sleek glassmorphic overlays, was custom-built from scratch.
+
 ## Installation
 
 From the project root:
