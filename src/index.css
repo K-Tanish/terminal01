@@ -102,3 +102,18 @@ tr.row-flash td {
 .animate-breathe {
   animation: breathe 2s ease-in-out infinite;
 }
+
+@keyframes breatheIcon {
+  0%, 100% {
+    transform: scale(0.9) translateX(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1) translateX(2px);
+    opacity: 1;
+  }
+}
+
+.animate-breathe-icon {
+  animation: breatheIcon 2s ease-in-out infinite;
+}

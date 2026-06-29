@@ -105,10 +105,32 @@ function Dashboard({ onGoHome }: { onGoHome: () => void }) {
   return (
     <div className="flex h-full w-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       {isSidebarOpen && (
-        <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} onGoHome={onGoHome} />
+        <div className="relative h-full flex shrink-0 z-50">
+          <Sidebar layout={layout} onToggle={togglePanel} onReset={resetLayout} onGoHome={onGoHome} />
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="absolute -right-8 top-1/2 -translate-y-1/2 bg-[#0b0b0b] text-[#e3ff73] w-8 h-16 flex items-center justify-center rounded-r-xl shadow-[2px_0_8px_rgba(0,0,0,0.15)] border border-gray-800 border-l-0 hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+            title="Close Settings"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
       )}
 
-      <main className="flex-1 flex flex-col min-w-0 bg-[#f4f7f9] overflow-hidden">
+      <main className="relative flex-1 flex flex-col min-w-0 bg-[#f4f7f9] overflow-hidden">
+        {!isSidebarOpen && (
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-50 bg-[#0b0b0b] text-[#e3ff73] w-8 h-16 flex items-center justify-center rounded-r-xl shadow-[2px_0_8px_rgba(0,0,0,0.15)] border border-gray-800 border-l-0 hover:bg-[#1a1a1a] transition-colors cursor-pointer"
+            title="Open Settings"
+          >
+            <svg className="w-5 h-5 animate-breathe-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
         <Header
           kpi={kpi}
           isPaused={isPaused}
